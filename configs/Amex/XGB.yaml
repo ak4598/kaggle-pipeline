@@ -3,12 +3,13 @@ modules:
   model: "AmexXGB"
 
 dataset:
+  prepare: true
   sampling: "NA"
 
 model:
   train:
     itr: 1
-    load_from: "" #"/Users/ak4598/Desktop/AMEX-Default-Prediction/models/XGB_07390812624046239_20072022210144_.sav"
+    load_from: ""
     train: true
     save: true
 

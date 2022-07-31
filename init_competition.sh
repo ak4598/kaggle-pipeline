@@ -15,8 +15,12 @@ fi
 
 
 mkdir configs/$competition_name
-mkdir -p data/$competition_name/dataset
+mkdir -p data/$competition_name/dataset/raw
+mkdir -p data/$competition_name/dataset/output
+touch data/$competition_name/dataset/raw/.empty
+touch data/$competition_name/dataset/output/.empty
 mkdir metric/$competition_name
 mkdir models/$competition_name
 mkdir output/$competition_name
+touch output/$competition_name/.empty
 echo "Created folders for competion: $competition_name"

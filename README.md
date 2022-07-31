@@ -5,11 +5,11 @@ This pipeline is aims to facilitate the workflow from cleaning dataset to evalua
 ## Get Start
 To initialize a new competition:
 ```shell
-./init.sh <competition_name>
+./init_competition.sh <competition_name>
 ```
 To delete a competition:
 ```shell
-./init.sh rm <competition_name>
+./init_competition.sh rm <competition_name>
 ```
 
 ## Environment
@@ -35,4 +35,9 @@ The basic workflow of a competition:
 
 To ensure any kind of competition can implement such workflow, interfaces are integrated to necessary classes (IData, IModel) such that regardless of the formats of data and types of models, the pipeline can still run smoothly. <br>
 
-Therefore, please make sure to inherit `IData` for DataManager and `IModel` for any models when you are integrating them for a competition.
+Therefore, please make sure to inherit `IData` for DataManager and `IModel` for any models when you are integrating them for a competition. <br>
+
+Start:
+```shell
+python main.py -c <competition_name> -m <model_name>
+```

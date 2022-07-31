@@ -7,8 +7,6 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Kaggle pipeline')
     parser.add_argument('-c', '--competition', type=str,
                         help='competition name')
-    parser.add_argument('-p', '--prepare',
-                        action='store_true', help='prepare dataset')
     parser.add_argument('-m', '--model', type=str, help='model name')
     return parser.parse_args()
 
@@ -17,7 +15,6 @@ def main():
     args = parse_args()
 
     COMPETITION = args.competition
-    PREP = args.prepare
     MODEL = args.model
 
     with open(os.path.join('configs', COMPETITION, MODEL + '.yaml')) as f:
@@ -28,7 +25,7 @@ def main():
 
     d = dataset(cfg["dataset"])
 
-    if PREP:
+    if cfg["dataset"]["prepare"]:
         d.clean()
         d.split()
 
