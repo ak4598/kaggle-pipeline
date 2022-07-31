@@ -118,7 +118,8 @@ class XGB(IModel):
                                 n_jobs=self.cfg["clf"]["init"]["n_jobs"]
                                 ).mean()
 
-        print("Amex CV score = {:.3f}, params = {}".format(-score, self.param))
+        print(
+            "Amex CV score = {:.3f}, params = {}".format(-score, packed_inputs))
         return score
 
     def save_output(self):

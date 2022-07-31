@@ -3,7 +3,7 @@ modules:
   model: "AmexLGB"
 
 dataset:
-  prepare: true
+  prepare: false
   sampling: "NA"
 
 model:
@@ -63,5 +63,5 @@ model:
         q: 0.01
 
       learning_rate:
-        low: 2
-        high: 80
+        low: 0.002
+        high: 0.09

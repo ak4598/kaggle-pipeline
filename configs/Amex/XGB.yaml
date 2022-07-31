@@ -3,7 +3,7 @@ modules:
   model: "AmexXGB"
 
 dataset:
-  prepare: true
+  prepare: false
   sampling: "NA"
 
 model:
