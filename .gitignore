@@ -1,0 +1,5 @@
+__pycache__
+*.csv
+*.sav
+*.parquet
+.DS_Store

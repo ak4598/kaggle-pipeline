@@ -1,0 +1,35 @@
+modules:
+  data: "AmexDataManager"
+  model: "AmexXGB"
+
+dataset:
+  sampling: "NA"
+
+model:
+  train:
+    itr: 1
+    load_from: "" #"/Users/ak4598/Desktop/AMEX-Default-Prediction/models/XGB_07390812624046239_20072022210144_.sav"
+    train: true
+    save: true
+
+  clf:
+    init:
+      objective: "binary:logistic"
+      tree_method: hist
+      booster: "dart"
+      use_label_encoder: false
+      learning_rate: 0.002
+      n_jobs: 8
+
+    search:
+      cv: 5
+
+      n_estimators:
+        low: 5
+        high: 1500
+        q: 1
+
+      max_depth:
+        low: 2
+        high: 80
+        q: 1

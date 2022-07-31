@@ -1,0 +1,66 @@
+modules:
+  data: "AmexDataManager"
+  model: "AmexLGB"
+
+dataset:
+  sampling: "NA"
+
+model:
+  train:
+    itr: 1
+    load_from: "" #"/Users/ak4598/Desktop/AMEX-Default-Prediction/models/LGB_07876961955116132_17072022144614_.sav"
+    train: true
+    save: true
+
+  clf:
+    init:
+      boosting_type: "dart"
+      class_weight: balanced
+      objective: "binary"
+      xgboost_dart_mode: true
+      n_jobs: 8
+
+    search:
+      cv: 5
+
+      n_estimators:
+        low: 5
+        high: 1500
+        q: 10
+
+      max_depth:
+        low: 2
+        high: 80
+        q: 1
+
+      num_leaves:
+        low: 10
+        high: 10000
+        q: 1
+
+      min_split_gain:
+        low: 0.0
+        high: 1000.0
+
+      min_child_weight:
+        low: 0.0001
+        high: 0.5
+
+      subsample_for_bin:
+        low: 100
+        high: 20000
+        q: 100
+
+      reg_alpha:
+        low: 0.0
+        high: 2.0
+        q: 0.01
+
+      reg_lambda:
+        low: 0.0
+        high: 2.0
+        q: 0.01
+
+      learning_rate:
+        low: 2
+        high: 80
