@@ -1,9 +1,0 @@
-modules:
-  data: "DataManager name"
-  model: "Model name"
-
-dataset:
-  prepare: true
-
-model:
-  train: "params"

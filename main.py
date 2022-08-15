@@ -17,7 +17,7 @@ def main():
     COMPETITION = args.competition
     MODEL = args.model
 
-    with open(os.path.join('configs', COMPETITION, MODEL + '.yaml')) as f:
+    with open(os.path.join('configs', MODEL + '.yaml')) as f:
         cfg = yaml.load(f, Loader=yaml.FullLoader)
 
     dataset = getattr(__import__("data"), cfg["modules"]["data"])
@@ -34,7 +34,7 @@ def main():
     m = model(cfg["model"])
     m.build()
     m.train(X_train, Y_train)
-    m.eval(X_test, Y_test)
+    # m.eval(X_test, Y_test)
 
 
 if __name__ == '__main__':

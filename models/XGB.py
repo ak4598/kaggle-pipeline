@@ -50,8 +50,8 @@ class XGB(IModel):
                                        max_depth=self.param["max_depth"])
 
     def train(self, X_train, Y_train):
-        assert(isinstance(self.model, XGBClassifier)
-               ), "XGB model is not yet built!"
+        assert (isinstance(self.model, XGBClassifier)
+                ), "XGB model is not yet built!"
 
         if not self.cfg["train"]["train"]:
             print("You chose to skip training...")
@@ -81,8 +81,8 @@ class XGB(IModel):
         self.model = final_model
 
     def eval(self, X_test, Y_test):
-        assert(isinstance(self.model, XGBClassifier)
-               ), "XGB model is not yet built!"
+        assert (isinstance(self.model, XGBClassifier)
+                ), "XGB model is not yet built!"
 
         print("Evaluating model...")
         Y_pred = self.model.predict_proba(
