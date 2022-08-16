@@ -65,9 +65,9 @@ class DataManager(IData):
             X_train, X_test, Y_train, Y_test = train_test_split(
                 data.drop('target', axis=1), data['target'], test_size=0.2, random_state=1)
 
-            if self.cfg["sampling"] == 'RUS':
+            if self.cfg["dataset"]["sampling"] == 'RUS':
                 X_train, Y_train = self._undersample(
-                    X_train, Y_train, RUS_method=self.cfg["sampling"])
+                    X_train, Y_train, RUS_method=self.cfg["dataset"]["sampling"])
 
             X_train.to_parquet(self.X_train_path)
             Y_train.to_csv(self.Y_train_path, index=False)

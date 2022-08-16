@@ -23,7 +23,7 @@ def main():
     dataset = getattr(__import__("data"), cfg["modules"]["data"])
     model = getattr(__import__("models"), cfg["modules"]["model"])
 
-    d = dataset(cfg["dataset"])
+    d = dataset(cfg)
 
     if cfg["dataset"]["prepare"]:
         d.clean()
@@ -31,10 +31,10 @@ def main():
 
     X_train, Y_train, X_test, Y_test = d.load()
 
-    m = model(cfg["model"])
+    m = model(cfg)
     m.build()
     m.train(X_train, Y_train)
-    # m.eval(X_test, Y_test)
+    m.eval(X_test, Y_test)
 
 
 if __name__ == '__main__':
