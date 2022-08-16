@@ -12,7 +12,7 @@ model:
     itr: 1
     load_from: ""
     train: true
-    save: false
+    save: true
 
   clf:
     init:

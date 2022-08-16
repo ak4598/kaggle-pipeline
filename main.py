@@ -33,8 +33,11 @@ def main():
 
     m = model(cfg)
     m.build()
-    m.train(X_train, Y_train)
-    m.eval(X_test, Y_test)
+    best_model, best_params = m.train(X_train, Y_train)
+    final_score = m.eval(X_test, Y_test)
+
+    if cfg["model"]["train"]["save"]:
+        d.save(COMPETITION, cfg, best_model, best_params, final_score)
 
 
 if __name__ == '__main__':

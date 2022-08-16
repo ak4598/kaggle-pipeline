@@ -1,11 +1,14 @@
 import os
 import json
+import yaml
+import pickle
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
 from imblearn.under_sampling import RandomUnderSampler
 from sklearn.preprocessing import OneHotEncoder
 from pathlib import Path
+from datetime import datetime
 from interfaces import IData
 
 
@@ -76,6 +79,52 @@ class DataManager(IData):
             Y_test.to_csv(self.Y_test_path, index=False)
 
             del X_test, Y_test
+
+    def save(self, COMPETITION, cfg, best_model, best_params, final_score):
+        print('Saving best model...')
+
+        dt = datetime.now().strftime('%Y%m%d%H%M%S')
+
+        final_score_str = "%.6f" % (final_score)
+
+        dataset_path = Path(__file__).parent.parent.parent.resolve() / \
+            'data' / COMPETITION / 'dataset' / 'output'
+
+        output_dir = "%s_%s_%s" % (COMPETITION, final_score_str, dt)
+        output_path = Path(__file__).parent.parent.parent.resolve() / \
+            'output' / COMPETITION / output_dir
+
+        os.makedirs(output_path, exist_ok=True)
+
+        model_sav = "%s_%s_%s.sav" % (COMPETITION, final_score_str, dt)
+        pickle.dump(best_model, open(output_path / model_sav, 'wb'))
+
+        print("Best model saved.")
+
+        print('Reading kaggle test data for prediction...')
+        kaggle_test = pd.read_parquet(
+            dataset_path / 'test_data_reduced.parquet')
+
+        print('Predicting output...')
+        submit_df = kaggle_test[['customer_ID']]
+
+        submit_df['prediction'] = best_model.predict_proba(
+            kaggle_test.drop(['customer_ID'], axis=1))[:, 1]
+
+        print('Saving output to csv...')
+        submission_csv = "%s_%s_%s.csv" % (COMPETITION, final_score_str, dt)
+        submit_df.to_csv(
+            output_path / submission_csv, index=False)
+
+        print('Saving best config to yaml...')
+        for param in best_params.keys():
+            cfg["model"]["clf"]["init"][param] = best_params[param]
+
+        best_cfg_yaml = "%s_%s_%s.yaml" % (COMPETITION, final_score_str, dt)
+        with open(output_path / best_cfg_yaml, 'w') as f:
+            yaml.dump(cfg, f)
+
+        print("Saved.")
 
     ##############
     ####utils#####

@@ -14,7 +14,6 @@ class Hyperopt(IModel):
         self.metric = getattr(__import__("metric"),
                               cfg["modules"]["metric"])
         self.scorer = make_scorer(self.metric, needs_proba=True)
-        self.score = 0
 
     def build(self):
         print("Building model...")
@@ -25,6 +24,8 @@ class Hyperopt(IModel):
             self.model = pickle.load(
                 open(self.cfg["model"]["train"]["load_from"], 'rb'))
 
+            print(self.model)
+
         else:
             self.model = self.clf(**self.cfg["model"]["clf"]["init"])
 
@@ -34,7 +35,7 @@ class Hyperopt(IModel):
 
         if not self.cfg["model"]["train"]["train"]:
             print("You chose to skip training...")
-            return
+            return self.model, {}
 
         self.X_train = X_train
         self.Y_train = Y_train
@@ -64,16 +65,18 @@ class Hyperopt(IModel):
                     for param in params_not_to_search}
 
         # cast to int/float based on the params' types at init stage
-        best = {param: int(best[param]) if isinstance(
+        best_params = {param: int(best[param]) if isinstance(
             self.cfg["model"]["clf"]["init"][param], int) else best[param] for param in best.keys()}
 
         final_model = self.clf(
             **excluded,
-            **best
+            **best_params
         )
 
         final_model.fit(self.X_train, self.Y_train)
         self.model = final_model
+
+        return self.model, best_params
 
     def objective(self, packed_inputs):
         score = cross_val_score(self.model,
@@ -94,6 +97,8 @@ class Hyperopt(IModel):
         print("Evaluating model...")
         Y_pred = self.model.predict_proba(X_test)[:, 1]
 
-        self.score = -self.metric(Y_test, Y_pred)
+        score = -self.metric(Y_test, Y_pred)
 
-        print("Score: %.6f" % (self.score))
+        print("Score: %.6f" % (score))
+
+        return score

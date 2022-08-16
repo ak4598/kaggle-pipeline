@@ -16,3 +16,7 @@ class IData(ABC):
     @abstractmethod
     def split(self):
         pass
+
+    @abstractmethod
+    def save(self):
+        pass
