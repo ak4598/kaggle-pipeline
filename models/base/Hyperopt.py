@@ -8,8 +8,9 @@ from sklearn.metrics import make_scorer
 
 
 class Hyperopt(IModel):
-    def __init__(self, cfg):
+    def __init__(self, cfg, clf):
         super(Hyperopt, self).__init__(cfg)
+        self.clf = clf
         self.metric = getattr(__import__("metric"),
                               cfg["modules"]["metric"])
         self.scorer = make_scorer(self.metric, needs_proba=True)
@@ -25,10 +26,10 @@ class Hyperopt(IModel):
                 open(self.cfg["model"]["train"]["load_from"], 'rb'))
 
         else:
-            self.model = LGBMClassifier(**self.cfg["model"]["clf"]["init"])
+            self.model = self.clf(**self.cfg["model"]["clf"]["init"])
 
     def train(self, X_train, Y_train):
-        assert (isinstance(self.model, LGBMClassifier)
+        assert (isinstance(self.model, self.clf)
                 ), "Model is not yet built!"
 
         if not self.cfg["model"]["train"]["train"]:
@@ -59,26 +60,20 @@ class Hyperopt(IModel):
         # exclude params that are not in the searching space
         params_not_to_search = [
             param for param in self.cfg["model"]["clf"]["init"].keys() if param not in params_to_search]
+        excluded = {param: self.cfg["model"]["clf"]["init"][param]
+                    for param in params_not_to_search}
 
         # cast to int/float based on the params' types at init stage
-        final_model = LGBMClassifier(
-            **{param: self.cfg["model"]["clf"]["init"][param] for param in params_not_to_search},
-            **{param: int(best[param]) if isinstance(self.cfg["model"]["clf"]["init"][param], int) else best[param] for param in best.keys()}
+        best = {param: int(best[param]) if isinstance(
+            self.cfg["model"]["clf"]["init"][param], int) else best[param] for param in best.keys()}
+
+        final_model = self.clf(
+            **excluded,
+            **best
         )
 
         final_model.fit(self.X_train, self.Y_train)
         self.model = final_model
-
-    def eval(self, X_test, Y_test):
-        assert (isinstance(self.model, LGBMClassifier)
-                ), "Model is not yet built!"
-
-        print("Evaluating model...")
-        Y_pred = self.model.predict_proba(X_test)[:, 1]
-
-        self.score = -self.metric(Y_test, Y_pred)
-
-        print("Score: %.6f" % (self.score))
 
     def objective(self, packed_inputs):
         score = cross_val_score(self.model,
@@ -91,3 +86,14 @@ class Hyperopt(IModel):
 
         print("CV score = {:.6f}, params = {}".format(-score, packed_inputs))
         return score
+
+    def eval(self, X_test, Y_test):
+        assert (isinstance(self.model, self.clf)
+                ), "Model is not yet built!"
+
+        print("Evaluating model...")
+        Y_pred = self.model.predict_proba(X_test)[:, 1]
+
+        self.score = -self.metric(Y_test, Y_pred)
+
+        print("Score: %.6f" % (self.score))

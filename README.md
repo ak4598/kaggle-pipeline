@@ -2,16 +2,6 @@
 
 This pipeline is aims to facilitate the workflow from cleaning dataset to evaluate a model for a competition.
 
-## Get Start
-To initialize a new competition:
-```shell
-./init_competition.sh <competition_name>
-```
-To delete a competition:
-```shell
-./init_competition.sh rm <competition_name>
-```
-
 ## Environment
 Using pipenv:
 ```shell
