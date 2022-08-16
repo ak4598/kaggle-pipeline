@@ -71,8 +71,7 @@ class LGB(IModel):
             **{param: int(best[param]) if isinstance(self.cfg["clf"]["init"][param], int) else best[param] for param in best.keys()}
         )
 
-        final_model.fit(self.X_train.drop(
-            ['customer_ID'], axis=1), np.ravel(self.Y_train))
+        final_model.fit(self.X_train, self.Y_train)
         self.model = final_model
 
     def eval(self, X_test, Y_test):
@@ -80,10 +79,9 @@ class LGB(IModel):
                 ), "LGB model is not yet built!"
 
         print("Evaluating model...")
-        Y_pred = self.model.predict_proba(
-            X_test.drop(['customer_ID'], axis=1))[:, 1]
+        Y_pred = self.model.predict_proba(X_test)[:, 1]
 
-        self.score = -amex_metric(Y_test.to_numpy(), Y_pred)
+        self.score = -amex_metric(Y_test, Y_pred)
 
         print("Score: %.6f" % (self.score))
 
@@ -96,8 +94,8 @@ class LGB(IModel):
 
     def objective(self, packed_inputs):
         score = cross_val_score(self.model,
-                                self.X_train.drop(['customer_ID'], axis=1),
-                                np.ravel(self.Y_train),
+                                self.X_train,
+                                self.Y_train,
                                 scoring=self.amex_scorer,
                                 cv=self.cfg["clf"]["cross_validation"],
                                 n_jobs=self.cfg["clf"]["init"]["n_jobs"]

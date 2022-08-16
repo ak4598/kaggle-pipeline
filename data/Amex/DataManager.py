@@ -1,6 +1,7 @@
 import os
 import json
 import pandas as pd
+import numpy as np
 from sklearn.model_selection import train_test_split
 from imblearn.under_sampling import RandomUnderSampler
 from sklearn.preprocessing import OneHotEncoder
@@ -33,11 +34,18 @@ class DataManager(IData):
 
     def load(self):
         print("Loading dataset...")
-        return \
-            pd.read_parquet(self.X_train_path), \
-            pd.read_csv(self.Y_train_path), \
-            pd.read_parquet(self.X_test_path), \
-            pd.read_csv(self.Y_test_path)
+        X_train = pd.read_parquet(self.X_train_path)
+        Y_train = pd.read_csv(self.Y_train_path)
+        X_test = pd.read_parquet(self.X_test_path)
+        Y_test = pd.read_csv(self.Y_test_path)
+
+        X_train = X_train.drop(['customer_ID'], axis=1)
+        Y_train = np.ravel(Y_train)
+        X_test = X_test.drop(['customer_ID'], axis=1)
+        Y_test = Y_test.to_numpy()
+
+        # return pd.read_parquet(self.X_train_path), pd.read_csv(self.Y_train_path), pd.read_parquet(self.X_test_path), pd.read_csv(self.Y_test_path)
+        return X_train, Y_train, X_test, Y_test
 
     def clean(self):
         print("Cleaning dataset...")
