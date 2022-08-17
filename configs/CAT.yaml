@@ -27,12 +27,12 @@ model:
         search: true
         space:
           low: 5
-          high: 6
+          high: 1500
           q: 1
 
       max_depth:
         search: true
         space:
           low: 2
-          high: 3
+          high: 80
           q: 1
