@@ -2,6 +2,6 @@ from models import Hyperopt
 from lightgbm import LGBMClassifier
 
 
-class LGB(Hyperopt):
+class LGB_Hyperopt(Hyperopt):
     def __init__(self, cfg):
-        super(LGB, self).__init__(cfg, LGBMClassifier)
+        super(LGB_Hyperopt, self).__init__(cfg, LGBMClassifier)

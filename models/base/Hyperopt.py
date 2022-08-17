@@ -24,8 +24,6 @@ class Hyperopt(IModel):
             self.model = pickle.load(
                 open(self.cfg["model"]["train"]["load_from"], 'rb'))
 
-            print(self.model)
-
         else:
             self.model = self.clf(**self.cfg["model"]["clf"]["init"])
 
@@ -66,7 +64,7 @@ class Hyperopt(IModel):
 
         # cast to int/float based on the params' types at init stage
         best_params = {param: int(best[param]) if isinstance(
-            self.cfg["model"]["clf"]["init"][param], int) else best[param] for param in best.keys()}
+            self.cfg["model"]["clf"]["init"][param], int) else float(best[param]) for param in best.keys()}
 
         final_model = self.clf(
             **excluded,

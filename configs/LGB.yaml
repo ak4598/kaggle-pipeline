@@ -1,7 +1,7 @@
 modules:
   data: "AmexDataManager"
-  model: "AmexLGB"
-  metric: "amex_metric"
+  model: "LGB_Hyperopt"
+  metric: "Amex"
 
 dataset:
   prepare: false
@@ -10,8 +10,8 @@ dataset:
 model:
   train:
     itr: 1
-    load_from: ""
-    train: true
+    load_from: "/Users/ak4598/Desktop/kaggle-pipeline/output/Amex/Amex_0.779224_20220817090821/Amex_0.779224_20220817090821.sav"
+    train: false
     save: true
 
   clf:
