@@ -80,25 +80,26 @@ class DataManager(IData):
 
             del X_test, Y_test
 
-    def save(self, COMPETITION, cfg, best_model, best_params, final_score):
+    def save(self, best_model, best_params, final_score):
         print('Saving best model...')
 
-        dt = datetime.now().strftime('%Y%m%d%H%M%S')
+        model = self.cfg["modules"]["model"]
+        metric = self.cfg["modules"]["metric"]
 
+        dt = datetime.now().strftime('%Y%m%d%H%M%S')
         final_score_str = "%.6f" % (final_score)
 
         dataset_path = Path(__file__).parent.parent.parent.resolve() / \
-            'data' / COMPETITION / 'dataset' / 'output'
+            'data' / metric / 'dataset' / 'output'
 
-        output_dir = "%s_%s_%s" % (
-            cfg["modules"]["model"], final_score_str, dt)
+        output_dir = "%s_%s_%s" % (model, final_score_str, dt)
+
         output_path = Path(__file__).parent.parent.parent.resolve() / \
-            'output' / COMPETITION / output_dir
+            'output' / metric / output_dir
 
         os.makedirs(output_path, exist_ok=True)
 
-        model_sav = "%s_%s_%s.sav" % (
-            cfg["modules"]["model"], final_score_str, dt)
+        model_sav = "%s_%s_%s.sav" % (model, final_score_str, dt)
         pickle.dump(best_model, open(output_path / model_sav, 'wb'))
 
         print("Best model saved.")
@@ -114,19 +115,17 @@ class DataManager(IData):
             kaggle_test.drop(['customer_ID'], axis=1))[:, 1]
 
         print('Saving output to csv...')
-        submission_csv = "%s_%s_%s.csv" % (
-            cfg["modules"]["model"], final_score_str, dt)
+        submission_csv = "%s_%s_%s.csv" % (model, final_score_str, dt)
         submit_df.to_csv(
             output_path / submission_csv, index=False)
 
         print('Saving best config to yaml...')
         for param in best_params.keys():
-            cfg["model"]["clf"]["init"][param] = best_params[param]
+            self.cfg["model"]["clf"]["init"][param] = best_params[param]
 
-        best_cfg_yaml = "%s_%s_%s.yaml" % (
-            cfg["modules"]["model"], final_score_str, dt)
+        best_cfg_yaml = "%s_%s_%s.yaml" % (model, final_score_str, dt)
         with open(output_path / best_cfg_yaml, 'w') as f:
-            yaml.safe_dump(cfg, f, sort_keys=False)
+            yaml.safe_dump(self.cfg, f, sort_keys=False)
 
         print("Saved.")
 

@@ -10,7 +10,7 @@ dataset:
 model:
   train:
     itr: 1
-    load_from: "/Users/ak4598/Desktop/kaggle-pipeline/output/Amex/Amex_0.779224_20220817090821/Amex_0.779224_20220817090821.sav"
+    load_from: "/Users/ak4598/Desktop/kaggle-pipeline/output/Amex/LGB_Hyperopt_0.779224_20220817092141/LGB_Hyperopt_0.779224_20220817092141.sav"
     train: false
     save: true
 
