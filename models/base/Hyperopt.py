@@ -63,8 +63,8 @@ class Hyperopt(IModel):
                     for param in params_not_to_search}
 
         # cast to int/float based on the params' types at init stage
-        best_params = {param: int(best[param]) if isinstance(
-            self.cfg["model"]["clf"]["init"][param], int) else float(best[param]) for param in best.keys()}
+        best_params = {param: float(best[param]) if isinstance(
+            self.cfg["model"]["clf"]["init"][param], float) else int(best[param]) for param in best.keys()}
 
         final_model = self.clf(
             **excluded,
@@ -82,7 +82,8 @@ class Hyperopt(IModel):
                                 self.Y_train,
                                 scoring=self.scorer,
                                 cv=self.cfg["model"]["clf"]["cross_validation"],
-                                n_jobs=self.cfg["model"]["clf"]["init"]["n_jobs"]
+                                n_jobs=self.cfg["model"]["clf"]["init"]["n_jobs"] if "n_jobs" in self.cfg["model"]["clf"]["init"] else os.cpu_count(
+                                ) - 2
                                 ).mean()
 
         print("CV score = {:.6f}, params = {}".format(-score, packed_inputs))

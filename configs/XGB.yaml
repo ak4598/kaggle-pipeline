@@ -1,6 +1,7 @@
 modules:
   data: "AmexDataManager"
-  model: "AmexXGB"
+  model: "XGB_Hyperopt"
+  metric: "Amex"
 
 dataset:
   prepare: false
@@ -15,6 +16,8 @@ model:
 
   clf:
     init:
+      n_estimators: 100
+      max_depth: 1
       objective: "binary:logistic"
       tree_method: hist
       booster: "dart"
@@ -22,15 +25,18 @@ model:
       learning_rate: 0.002
       n_jobs: 8
 
-    search:
-      cv: 5
-
+    cross_validation: 5
+    searching_space:
       n_estimators:
-        low: 5
-        high: 1500
-        q: 1
+        search: true
+        space:
+          low: 5
+          high: 1500
+          q: 1
 
       max_depth:
-        low: 2
-        high: 80
-        q: 1
+        search: true
+        space:
+          low: 2
+          high: 80
+          q: 1

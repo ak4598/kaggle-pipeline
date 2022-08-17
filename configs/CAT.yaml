@@ -1,9 +1,10 @@
 modules:
   data: "AmexDataManager"
-  model: "AmexCAT"
+  model: "CAT_Hyperopt"
+  metric: "Amex"
 
 dataset:
-  prepare: true
+  prepare: false
   sampling: "NA"
 
 model:
@@ -15,23 +16,23 @@ model:
 
   clf:
     init:
-      train_dir: "output/Amex"
-      objective: "binary:logistic"
-      tree_method: hist
-      booster: "dart"
-      use_label_encoder: false
+      train_dir: "output/Amex/CAT_logs"
       learning_rate: 0.002
-      n_jobs: 8
+      n_estimators: 1
+      max_depth: 8
 
-    search:
-      cv: 5
-
+    cross_validation: 5
+    searching_space:
       n_estimators:
-        low: 5
-        high: 1500
-        q: 1
+        search: true
+        space:
+          low: 5
+          high: 6
+          q: 1
 
       max_depth:
-        low: 2
-        high: 80
-        q: 1
+        search: true
+        space:
+          low: 2
+          high: 3
+          q: 1

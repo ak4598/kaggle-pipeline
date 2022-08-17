@@ -3,4 +3,5 @@ __pycache__
 *.sav
 *.parquet
 .DS_Store
-output/*/*/*.yaml
+output/*
+!output/.empty
