@@ -7,7 +7,6 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Kaggle pipeline')
     parser.add_argument('--cfg', type=str,
                         help='cfg file path')
-    parser.add_argument('-m', '--model', type=str, help='model name')
     return parser.parse_args()
 
 

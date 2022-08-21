@@ -47,7 +47,6 @@ class DataManager(IData):
         X_test = X_test.drop(['customer_ID'], axis=1)
         Y_test = Y_test.to_numpy()
 
-        # return pd.read_parquet(self.X_train_path), pd.read_csv(self.Y_train_path), pd.read_parquet(self.X_test_path), pd.read_csv(self.Y_test_path)
         return X_train, Y_train, X_test, Y_test
 
     def clean(self):

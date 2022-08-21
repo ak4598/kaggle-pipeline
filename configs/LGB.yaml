@@ -9,7 +9,7 @@ dataset:
 
 model:
   train:
-    itr: 1
+    itr: 10
     load_from: ""
     train: true
     save: true
@@ -41,6 +41,7 @@ model:
       xgboost_dart_mode: true
 
     cross_validation: 5
+
     searching_space:
       num_leaves:
         search: true

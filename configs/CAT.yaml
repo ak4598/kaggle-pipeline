@@ -9,7 +9,7 @@ dataset:
 
 model:
   train:
-    itr: 1
+    itr: 50
     load_from: ""
     train: true
     save: true
@@ -17,11 +17,24 @@ model:
   clf:
     init:
       train_dir: "output/Amex/CAT_logs"
-      learning_rate: 0.002
-      n_estimators: 1
-      max_depth: 8
+      bootstrap_type: "Bayesian"
+      auto_class_weights: "Balanced"
+      # task_type: "GPU"
+      logging_level: "Silent"
+      # gpu_ram_part: 0.95
+      allow_writing_files: false
+      thread_count: -1
+      n_estimators: 50
+      learning_rate: 0.01
+      l2_leaf_reg: 3.0
+      bagging_temperature: 1.0
+      random_strength: 1.0
+      max_depth: 15
+      min_child_samples: 10
+      fold_len_multiplier: 2.0
 
     cross_validation: 5
+
     searching_space:
       n_estimators:
         search: true
@@ -30,9 +43,51 @@ model:
           high: 1500
           q: 1
 
+      learning_rate:
+        search: true
+        space:
+          low: 0.001
+          high: 0.1
+          q: 0.01
+
+      l2_leaf_reg:
+        search: true
+        space:
+          low: 1.0
+          high: 10.0
+          q: 0.05
+
+      bagging_temperature:
+        search: true
+        space:
+          low: 1.0
+          high: 10.0
+          q: 0.05
+
+      random_strength:
+        search: true
+        space:
+          low: 1.0
+          high: 5.0
+          q: 0.05
+
       max_depth:
         search: true
         space:
           low: 2
           high: 80
           q: 1
+
+      min_child_samples:
+        search: true
+        space:
+          low: 5
+          high: 500
+          q: 1
+
+      fold_len_multiplier:
+        search: true
+        space:
+          low: 1.0
+          high: 10.0
+          q: 0.05

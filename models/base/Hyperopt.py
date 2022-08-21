@@ -43,6 +43,13 @@ class Hyperopt(IModel):
         params_to_search = [
             param for param in search_cfg if search_cfg[param]["search"] == True]
 
+        # exclude params that are not in the searching space
+        params_not_to_search = [
+            param for param in self.cfg["model"]["clf"]["init"].keys() if param not in params_to_search]
+
+        self.excluded = {param: self.cfg["model"]["clf"]["init"][param]
+                         for param in params_not_to_search}
+
         self.param = {
             key: hp.quniform(key, *search_cfg[key]["space"].values())
             if "q" in search_cfg[key]["space"].keys()
@@ -56,18 +63,12 @@ class Hyperopt(IModel):
                     max_evals=self.cfg["model"]["train"]["itr"]
                     )
 
-        # exclude params that are not in the searching space
-        params_not_to_search = [
-            param for param in self.cfg["model"]["clf"]["init"].keys() if param not in params_to_search]
-        excluded = {param: self.cfg["model"]["clf"]["init"][param]
-                    for param in params_not_to_search}
-
         # cast to int/float based on the params' types at init stage
         best_params = {param: float(best[param]) if isinstance(
             self.cfg["model"]["clf"]["init"][param], float) else int(best[param]) for param in best.keys()}
 
         final_model = self.clf(
-            **excluded,
+            **self.excluded,
             **best_params
         )
 
@@ -77,13 +78,17 @@ class Hyperopt(IModel):
         return self.model, best_params
 
     def objective(self, packed_inputs):
+        packed_inputs = {param: float(packed_inputs[param]) if isinstance(
+            self.cfg["model"]["clf"]["init"][param], float) else int(packed_inputs[param]) for param in packed_inputs.keys()}
+        self.model = self.clf(**self.excluded, **packed_inputs)
+
         score = cross_val_score(self.model,
                                 self.X_train,
                                 self.Y_train,
                                 scoring=self.scorer,
                                 cv=self.cfg["model"]["clf"]["cross_validation"],
-                                n_jobs=self.cfg["model"]["clf"]["init"]["n_jobs"] if "n_jobs" in self.cfg["model"]["clf"]["init"] else os.cpu_count(
-                                ) - 2
+                                n_jobs=self.cfg["model"]["clf"]["init"]["n_jobs"] if "n_jobs" in self.cfg[
+                                    "model"]["clf"]["init"] else self.cfg["model"]["clf"]["init"]["thread_count"],
                                 ).mean()
 
         print("CV score = {:.6f}, params = {}".format(-score, packed_inputs))
