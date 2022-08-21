@@ -9,21 +9,36 @@ dataset:
 
 model:
   train:
-    itr: 1
+    itr: 50
     load_from: ""
     train: true
     save: true
 
   clf:
     init:
+      objective: "binary:logistic"
+      verbosity: 0
+      booster: "dart"
+      tree_method: hist # "gpu_hist"
+      n_jobs: -1
+      use_label_encoder: false
+
       n_estimators: 100
       max_depth: 1
-      objective: "binary:logistic"
-      tree_method: hist
-      booster: "dart"
-      use_label_encoder: false
+      max_leaves: 0
+      max_bin: 256 # If using histogram-based algorithm, maximum number of bins per feature
+      grow_policy: "lossguide" # 0: favor splitting at nodes closest to the node, i.e. grow depth-wise. 1: favor splitting at nodes with highest loss change.
       learning_rate: 0.002
-      n_jobs: 8
+      gamma: 0.0 # range: [0,∞]
+      min_child_weight: 0.0 # range: [0,∞]
+      max_delta_step: 0.0 # range: [0,∞]
+      subsample: 1.0 # range: (0,1]
+      colsample_bytree: 1.0 # range: (0,1]
+      colsample_bylevel: 1.0 # range: (0,1]
+      colsample_bynode: 1.0 # range: (0,1]
+      reg_alpha: 0.0 # range: [0,∞]
+      reg_lambda: 1.0 # range: [0,∞]
+      scale_pos_weight: 1 # range: [0,∞] # sum(negative instances) / sum(positive instances)
 
     cross_validation: 5
     searching_space:
@@ -40,3 +55,94 @@ model:
           low: 2
           high: 80
           q: 1
+
+      max_leaves:
+        search: true
+        space:
+          low: 0
+          high: 500
+          q: 5
+
+      max_bin:
+        search: true
+        space:
+          low: 20
+          high: 1000
+          q: 5
+
+      learning_rate:
+        search: true
+        space:
+          low: 0.001
+          high: 0.5
+          q: 0.001
+
+      gamma:
+        search: true
+        space:
+          low: 0.0
+          high: 100.0
+          q: 0.5
+
+      min_child_weight:
+        search: true
+        space:
+          low: 0.0
+          high: 100.0
+          q: 0.5
+
+      max_delta_step:
+        search: true
+        space:
+          low: 0
+          high: 100.0
+          q: 0.5
+
+      subsample:
+        search: true
+        space:
+          low: 0.0
+          high: 1.0
+          q: 0.05
+
+      colsample_bytree:
+        search: true
+        space:
+          low: 0.0
+          high: 1.0
+          q: 0.05
+
+      colsample_bylevel:
+        search: true
+        space:
+          low: 0.0
+          high: 1.0
+          q: 0.05
+
+      colsample_bynode:
+        search: true
+        space:
+          low: 0.0
+          high: 1.0
+          q: 0.05
+
+      reg_alpha:
+        search: true
+        space:
+          low: 0.0
+          high: 10.0
+          q: 0.05
+
+      reg_lambda:
+        search: true
+        space:
+          low: 0.0
+          high: 10.0
+          q: 0.05
+
+      scale_pos_weight:
+        search: true
+        space:
+          low: 25
+          high: 50
+          q: 0.1
